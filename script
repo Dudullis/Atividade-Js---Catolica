@@ -1,0 +1,53 @@
+class Gasto {
+    constructor(nome, valor, categoria) {
+        this.nome = nome;
+        this.valor = valor;
+        this.categoria = categoria;
+    }
+}
+
+let gastos = [];
+
+function adicionarGasto() {
+    let nome = document.getElementById('nome').value;
+    let valor = parseFloat(document.getElementById('valor').value);
+    let categoria = document.getElementById('categoria').value;
+
+    let novoGasto = new Gasto(nome, valor, categoria);
+    gastos.push(novoGasto);
+
+    atualizarListaGastos();
+}
+
+function removerGasto(index) {
+    gastos.splice(index, 1);
+    atualizarListaGastos();
+}
+
+function atualizarListaGastos() {
+    let listaGastos = document.getElementById('listaGastos');
+    listaGastos.innerHTML = '';
+
+    let categorias = {};
+    gastos.forEach(gasto => {
+        if (!(gasto.categoria in categorias)) {
+            categorias[gasto.categoria] = [];
+        }
+        categorias[gasto.categoria].push(gasto);
+    });
+
+    for (let categoria in categorias) {
+        let categoriaHeader = document.createElement('h3');
+        categoriaHeader.textContent = categoria;
+        listaGastos.appendChild(categoriaHeader);
+
+        categorias[categoria].forEach((gasto, index) => {
+            let gastoItem = document.createElement('div');
+            gastoItem.innerHTML = `
+                <strong>${gasto.nome}</strong> - R$ ${gasto.valor.toFixed(2)}
+                <button onclick="removerGasto(${index})" class="btn btn-danger btn-sm ml-2">Remover</button>
+            `;
+            listaGastos.appendChild(gastoItem);
+        });
+    }
+}
